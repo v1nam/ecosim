@@ -145,7 +145,7 @@ async fn main() {
             10.,
             20.,
             20.,
-            BLACK,
+            WHITE,
         );
         next_frame().await
     }
