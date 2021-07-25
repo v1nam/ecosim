@@ -40,13 +40,13 @@ impl Entity {
                     velocity.y *= -1.;
                 }
                 if target.x <= *rad {
-                    target.x *= *rad + target.x;
+                    target.x += *rad;
                 }
                 if target.x >= w {
                     target.x = w - (target.x - w);
                 }
                 if target.y <= *rad {
-                    target.y = *rad + target.y;
+                    target.y += *rad;
                 }
                 if target.y >= h {
                     target.y = h - (target.y - h);
