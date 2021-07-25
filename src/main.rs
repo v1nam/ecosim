@@ -102,7 +102,7 @@ async fn main() {
                             Food { pos, rad, energy } => {
                                 if pos != *op && pos.distance(*op) <= *or + rad {
                                     *oen += energy;
-                                    food_to_remove.push(pos.clone());
+                                    food_to_remove.push(pos);
                                 }
                             }
                             _ => panic!("Unsupported Entity for quadtree"),
