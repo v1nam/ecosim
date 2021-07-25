@@ -58,8 +58,7 @@ impl QuadTree {
             Entity::Food { rad: r, pos: p, .. } | Entity::Organism { rad: r, pos: p, .. } => {
                 rad = *r;
                 pos = *p;
-            }
-            // _ => panic!("Unsupported Entity for quadtree"),
+            } // _ => panic!("Unsupported Entity for quadtree"),
         }
         let top_quad = pos.y - rad < midy && pos.y + rad < midy;
         let bottom_quad = pos.y - rad > midy;
