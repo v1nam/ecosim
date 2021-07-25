@@ -94,15 +94,18 @@ async fn main() {
                     pos: op,
                     rad: or,
                     energy: oen,
+                    target: otar,
                     ..
                 } = obj
                 {
                     for other_obj in return_objects {
                         match other_obj {
                             Food { pos, rad, energy } => {
-                                if pos != *op && pos.distance(*op) <= *or + rad {
+                                if pos.distance(*op) <= *or + rad {
                                     *oen += energy;
                                     food_to_remove.push(pos);
+                                } else if pos.distance(*op) <= *or + rad + 20. {
+                                    *otar = pos;    
                                 }
                             }
                             _ => panic!("Unsupported Entity for quadtree"),
