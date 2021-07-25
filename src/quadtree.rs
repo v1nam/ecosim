@@ -59,7 +59,7 @@ impl QuadTree {
                 rad = *r;
                 pos = *p;
             }
-            _ => panic!("Unsupported Entity for quadtree"),
+            // _ => panic!("Unsupported Entity for quadtree"),
         }
         let top_quad = pos.y - rad < midy && pos.y + rad < midy;
         let bottom_quad = pos.y - rad > midy;
@@ -87,7 +87,7 @@ impl QuadTree {
                 return;
             }
         }
-        self.objects.push(circobj.clone());
+        self.objects.push(*circobj);
         if self.objects.len() > 10 && self.level < 5 {
             if self.nodes.is_empty() {
                 self.split();
@@ -114,7 +114,7 @@ impl QuadTree {
             }
         }
         for obj in &self.objects {
-            return_objects.push(obj.clone());
+            return_objects.push(*obj);
         }
     }
 }
