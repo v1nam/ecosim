@@ -64,7 +64,7 @@ async fn main() {
                     pos: vec2(gen_range(3.0, 1257.0), gen_range(3.0, 717.0)),
                 });
             }
-        } 
+        }
 
         for org in all_objects.iter_mut() {
             match org {
@@ -135,9 +135,9 @@ async fn main() {
         }
 
         if add_to_pop >= 1.0 {
-             population.push(organims_count);
-             food.push(food_count);
-             add_to_pop = 0.0;
+            population.push(organims_count);
+            food.push(food_count);
+            add_to_pop = 0.0;
         }
 
         if !food_to_remove.is_empty() {
