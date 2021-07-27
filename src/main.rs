@@ -155,8 +155,8 @@ async fn main() {
                         };
                         organisms_to_add.push(NewCell {
                             energy: new_en,
-                            size: gen_range(*or / 1.3, *or),
-                            speed: sp,
+                            size: gen_range(*or / 1.3, *or).max(4.),
+                            speed: sp.max(0.7),
                             pos: *op,
                         });
                     }
