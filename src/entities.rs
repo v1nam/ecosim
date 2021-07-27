@@ -18,6 +18,7 @@ pub enum Entity {
         pos: Vec2,
         velocity: Vec2,
         target: Vec2,
+        max_speed: f32,
     },
 }
 
@@ -30,6 +31,7 @@ impl Entity {
                 target,
                 velocity,
                 energy,
+                max_speed
             } => {
                 let w = screen_width() - *rad;
                 let h = screen_height() - *rad;
@@ -51,8 +53,8 @@ impl Entity {
                 if target.y >= h {
                     target.y = h - (target.y - h);
                 }
-                if target.distance(*pos) <= 1. {
-                    let r = gen_range(40., 80.);
+                if target.distance(*pos) <= *max_speed {
+                    let r = gen_range(*max_speed * 20., *max_speed * 40.);
                     let p = *velocity + *pos;
                     let theta = (p.y - pos.y).atan2(p.x - pos.x);
                     let angle = gen_range(
@@ -62,13 +64,20 @@ impl Entity {
                     *target = vec2(pos.x + r * angle.cos(), pos.y + r * angle.sin());
                 }
                 let direc = (*target - *pos).normalize();
-                let dv = direc * 1.6;
-                let accel = ((dv - *velocity) * 1.6).clamp_length_max(1.6);
-                *velocity = (*velocity + accel).clamp_length_max(1.6);
+                let dv = direc * *max_speed;
+                let accel = ((dv - *velocity) * *max_speed).clamp_length_max(*max_speed);
+                *velocity = (*velocity + accel).clamp_length_max(*max_speed);
                 *pos += *velocity;
-                *energy -= 0.0006;
+                *energy -= *max_speed / 2700.;
             }
             _ => panic!("Method only for Organism variant"),
         }
     }
+}
+
+pub struct NewCell {
+    pub energy: f32,
+    pub speed: f32,
+    pub size: f32,
+    pub pos: Vec2,
 }
