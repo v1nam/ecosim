@@ -3,7 +3,7 @@ use macroquad::rand::{gen_range, srand};
 mod entities;
 mod quadtree;
 
-use entities::Entity::{self, Food, Organism};
+use entities::{Entity::{self, Food, Organism}, NewCell};
 use quadtree::QuadTree;
 
 fn window_conf() -> Conf {
@@ -22,6 +22,7 @@ async fn main() {
     let mut add_to_pop = 0.0;
     let mut population: Vec<u32> = Vec::new();
     let mut food: Vec<u32> = Vec::new();
+    let mut average_speed: Vec<f32> = Vec::new();
     srand(macroquad::miniquad::date::now() as u64);
     for _ in 0..3 {
         let angle = gen_range(0.0, std::f32::consts::PI * 2.);
@@ -32,9 +33,11 @@ async fn main() {
             pos,
             target: vec2(pos.x + angle.cos(), pos.y + angle.sin()),
             velocity: Vec2::ZERO,
+            max_speed: gen_range(1.0, 1.6),
         });
     }
     population.push(3);
+    average_speed.push(all_objects.iter().map(|e| if let Organism { max_speed, .. } = e { *max_speed } else { 0.0 }).sum::<f32>() / 3.);
 
     for _ in 0..50 {
         all_objects.push(Food {
@@ -79,7 +82,7 @@ async fn main() {
         let mut return_objects: Vec<Entity>;
         let mut food_to_remove: Vec<Vec2> = Vec::new();
         let mut organisms_to_remove: Vec<Vec2> = Vec::new();
-        let mut organisms_to_add: Vec<Vec2> = Vec::new();
+        let mut organisms_to_add: Vec<NewCell> = Vec::new();
         let mut organims_count = 0;
         let mut food_count = 0;
         for obj in all_objects.iter_mut() {
@@ -87,6 +90,7 @@ async fn main() {
                 pos: objpos,
                 rad: objrad,
                 energy: objen,
+                max_speed: omsp,
                 ..
             } = obj
             {
@@ -96,7 +100,7 @@ async fn main() {
                     objpos.y,
                     *objrad,
                     2.0,
-                    Color::new(0.0, 0.0, 1.0, *objen),
+                    Color::new(1.0, (255. - *omsp * 30.) / 255., 0.0, *objen),
                 );
                 return_objects = Vec::new();
                 qtree.retrieve(&mut return_objects, obj);
@@ -106,6 +110,7 @@ async fn main() {
                     rad: or,
                     energy: oen,
                     target: otar,
+                    max_speed: msp,
                     ..
                 } = obj
                 {
@@ -114,6 +119,7 @@ async fn main() {
                             Food { pos, rad, energy } => {
                                 if pos.distance(*op) <= *or + rad {
                                     *oen += energy;
+                                    *or += 0.4;
                                     food_to_remove.push(pos);
                                 } else if pos.distance(*op) <= *or + rad + 20. {
                                     *otar = pos;
@@ -125,8 +131,10 @@ async fn main() {
                     if *oen <= 0.0 {
                         organisms_to_remove.push(*op);
                     } else if *oen >= 0.9 {
-                        *oen -= 0.4;
-                        organisms_to_add.push(*op);
+                        let new_en = gen_range(*oen / 4., *oen / 2.);
+                        *oen -= new_en;
+                        let sp = if gen_range(0.0, 1.0) <= 1. / 10. { gen_range(*msp - 1., *msp + 2.) } else { *msp };
+                        organisms_to_add.push(NewCell { energy: new_en, size: gen_range(*or / 1.3, *or), speed: sp, pos: *op });
                     }
                 }
             } else {
@@ -137,6 +145,7 @@ async fn main() {
         if add_to_pop >= 1.0 {
             population.push(organims_count);
             food.push(food_count);
+            average_speed.push(all_objects.iter().map(|e| if let Organism { max_speed, .. } = e { *max_speed } else { 0.0 }).sum::<f32>() / organims_count as f32);
             add_to_pop = 0.0;
         }
 
@@ -155,11 +164,12 @@ async fn main() {
         for new_cell in organisms_to_add {
             let angle = gen_range(0.0, std::f32::consts::PI * 2.);
             all_objects.push(Organism {
-                energy: gen_range(0.6, 0.85),
-                rad: gen_range(6.0, 11.0),
-                pos: new_cell,
-                target: vec2(new_cell.x + angle.cos(), new_cell.y + angle.sin()),
+                energy: new_cell.energy,
+                rad: new_cell.size,
+                pos: new_cell.pos,
+                target: vec2(new_cell.pos.x + angle.cos(), new_cell.pos.y + angle.sin()),
                 velocity: Vec2::ZERO,
+                max_speed: new_cell.speed,
             });
         }
         // draw_text(&format!("FPS: {}", get_fps() as u32, 10., 20., 20., WHITE);
@@ -174,4 +184,5 @@ async fn main() {
     }
     println!("Population: {:?}", population);
     println!("Food: {:?}", food);
+    println!("Average Speed {:?}", average_speed);
 }
