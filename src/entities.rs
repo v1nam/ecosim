@@ -31,7 +31,7 @@ impl Entity {
                 target,
                 velocity,
                 energy,
-                max_speed
+                max_speed,
             } => {
                 let w = screen_width() - *rad;
                 let h = screen_height() - *rad;

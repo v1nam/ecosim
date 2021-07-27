@@ -3,7 +3,10 @@ use macroquad::rand::{gen_range, srand};
 mod entities;
 mod quadtree;
 
-use entities::{Entity::{self, Food, Organism}, NewCell};
+use entities::{
+    Entity::{self, Food, Organism},
+    NewCell,
+};
 use quadtree::QuadTree;
 
 fn window_conf() -> Conf {
@@ -37,7 +40,19 @@ async fn main() {
         });
     }
     population.push(3);
-    average_speed.push(all_objects.iter().map(|e| if let Organism { max_speed, .. } = e { *max_speed } else { 0.0 }).sum::<f32>() / 3.);
+    average_speed.push(
+        all_objects
+            .iter()
+            .map(|e| {
+                if let Organism { max_speed, .. } = e {
+                    *max_speed
+                } else {
+                    0.0
+                }
+            })
+            .sum::<f32>()
+            / 3.,
+    );
 
     for _ in 0..50 {
         all_objects.push(Food {
@@ -133,8 +148,17 @@ async fn main() {
                     } else if *oen >= 0.9 {
                         let new_en = gen_range(*oen / 4., *oen / 2.);
                         *oen -= new_en;
-                        let sp = if gen_range(0.0, 1.0) <= 1. / 10. { gen_range(*msp - 1., *msp + 2.) } else { *msp };
-                        organisms_to_add.push(NewCell { energy: new_en, size: gen_range(*or / 1.3, *or), speed: sp, pos: *op });
+                        let sp = if gen_range(0.0, 1.0) <= 1. / 10. {
+                            gen_range(*msp - 1., *msp + 2.)
+                        } else {
+                            *msp
+                        };
+                        organisms_to_add.push(NewCell {
+                            energy: new_en,
+                            size: gen_range(*or / 1.3, *or),
+                            speed: sp,
+                            pos: *op,
+                        });
                     }
                 }
             } else {
@@ -145,7 +169,19 @@ async fn main() {
         if add_to_pop >= 1.0 {
             population.push(organims_count);
             food.push(food_count);
-            average_speed.push(all_objects.iter().map(|e| if let Organism { max_speed, .. } = e { *max_speed } else { 0.0 }).sum::<f32>() / organims_count as f32);
+            average_speed.push(
+                all_objects
+                    .iter()
+                    .map(|e| {
+                        if let Organism { max_speed, .. } = e {
+                            *max_speed
+                        } else {
+                            0.0
+                        }
+                    })
+                    .sum::<f32>()
+                    / organims_count as f32,
+            );
             add_to_pop = 0.0;
         }
 
