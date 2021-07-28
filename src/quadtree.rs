@@ -52,29 +52,27 @@ impl QuadTree {
         let midx = self.bounds[0] + (self.bounds[2] / 2.);
         let midy = self.bounds[1] + (self.bounds[3] / 2.);
 
-        let rad: f32;
-        let pos: Vec2;
         match circobj {
-            Entity::Food { rad: r, pos: p, .. } | Entity::Organism { rad: r, pos: p, .. } => {
-                rad = *r;
-                pos = *p;
-            } // _ => panic!("Unsupported Entity for quadtree"),
-        }
-        let top_quad = pos.y - rad < midy && pos.y + rad < midy;
-        let bottom_quad = pos.y - rad > midy;
+            Entity::Food { rad: r, pos: p, .. } | Entity::Organism { rad: r, pos: p, .. } | Entity::Predator { size: r, pos: p, .. } => {
+                let rad = *r;
+                let pos = *p;
+                let top_quad = pos.y - rad < midy && pos.y + rad < midy;
+                let bottom_quad = pos.y - rad > midy;
 
-        if pos.x - rad < midx && pos.x + rad < midx {
-            if top_quad {
-                index = Some(1);
-            } else if bottom_quad {
-                index = Some(2);
-            }
-        } else if pos.x - rad > midx {
-            if top_quad {
-                index = Some(0);
-            } else if bottom_quad {
-                index = Some(3);
-            }
+                if pos.x - rad < midx && pos.x + rad < midx {
+                    if top_quad {
+                        index = Some(1);
+                    } else if bottom_quad {
+                        index = Some(2);
+                    }
+                } else if pos.x - rad > midx {
+                    if top_quad {
+                        index = Some(0);
+                    } else if bottom_quad {
+                        index = Some(3);
+                    }
+                }
+            } // _ => panic!("Unsupported Entity for quadtree"),
         }
         index
     }
