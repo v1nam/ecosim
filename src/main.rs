@@ -1,12 +1,12 @@
 use macroquad::prelude::*;
 use macroquad::rand::{gen_range, srand};
 mod entities;
-mod quadtree;
 mod plotdata;
+mod quadtree;
 
 use entities::Entity::{self, Food, Organism, Predator};
-use quadtree::QuadTree;
 use plotdata::plot;
+use quadtree::QuadTree;
 
 fn window_conf() -> Conf {
     Conf {
@@ -153,13 +153,13 @@ async fn main() {
                                 } else if pos.distance(*op) <= *or + rad + 20. {
                                     *otar = pos;
                                 }
-                            },
+                            }
                             Predator { pos, .. } => {
                                 if pos.distance(*op) <= *or + 20. {
                                     *otar = *op + *op - pos;
                                 }
                             }
-                            _ => {},
+                            _ => {}
                         }
                     }
                     if *oen <= 0.0 {
@@ -180,7 +180,15 @@ async fn main() {
             } = obj
             {
                 predator_count += 1;
-                draw_poly_lines(pos.x, pos.y, *sides, *size, *rot, 2., Color::new(1.0, 0.0, 0.0, *energy));
+                draw_poly_lines(
+                    pos.x,
+                    pos.y,
+                    *sides,
+                    *size,
+                    *rot,
+                    2.,
+                    Color::new(1.0, 0.0, 0.0, *energy),
+                );
                 return_objects = Vec::new();
                 if *energy < 0.6 {
                     pred_tree.retrieve(&mut return_objects, obj);
@@ -197,7 +205,9 @@ async fn main() {
                 {
                     for other_obj in return_objects {
                         match other_obj {
-                            Organism { pos, rad, energy, .. } => {
+                            Organism {
+                                pos, rad, energy, ..
+                            } => {
                                 if pos.distance(*position) <= *psize + rad {
                                     *pen += energy;
                                     *repurge += gen_range(0.0, energy);
@@ -205,7 +215,7 @@ async fn main() {
                                 } else if pos.distance(*position) <= *psize + rad + 20. {
                                     *ptar = pos;
                                 }
-                            },
+                            }
                             _ => {}
                         }
                     }
@@ -217,7 +227,6 @@ async fn main() {
                         predator_to_add.push(*position);
                     }
                 }
-
             } else {
                 food_count += 1;
             }
@@ -271,7 +280,7 @@ async fn main() {
                 velocity: Vec2::ZERO,
                 target: vec2(new_pred.x + angle.cos(), new_pred.y + angle.sin()),
                 reproductive_urge: 0.0,
-            });   
+            });
         }
         // draw_text(&format!("FPS: {}", get_fps() as u32, 10., 20., 20., WHITE);
         draw_text(

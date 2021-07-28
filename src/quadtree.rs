@@ -53,7 +53,11 @@ impl QuadTree {
         let midy = self.bounds[1] + (self.bounds[3] / 2.);
 
         match circobj {
-            Entity::Food { rad: r, pos: p, .. } | Entity::Organism { rad: r, pos: p, .. } | Entity::Predator { size: r, pos: p, .. } => {
+            Entity::Food { rad: r, pos: p, .. }
+            | Entity::Organism { rad: r, pos: p, .. }
+            | Entity::Predator {
+                size: r, pos: p, ..
+            } => {
                 let rad = *r;
                 let pos = *p;
                 let top_quad = pos.y - rad < midy && pos.y + rad < midy;
