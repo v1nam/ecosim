@@ -8,4 +8,4 @@ edition = "2018"
 
 [dependencies]
 macroquad = "0.3"
-
+plotters = "0.3"
