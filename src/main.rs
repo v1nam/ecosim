@@ -2,9 +2,11 @@ use macroquad::prelude::*;
 use macroquad::rand::{gen_range, srand};
 mod entities;
 mod quadtree;
+mod plotdata;
 
 use entities::Entity::{self, Food, Organism, Predator};
 use quadtree::QuadTree;
+use plotdata::plot;
 
 fn window_conf() -> Conf {
     Conf {
@@ -77,7 +79,7 @@ async fn main() {
 
         if spawn_food >= 3.0 {
             spawn_food = 0.0;
-            for _ in 0..25 {
+            for _ in 0..gen_range(20, 30) {
                 all_objects.push(Food {
                     energy: gen_range(0.3, 1.0),
                     rad: 3.0,
@@ -289,7 +291,5 @@ async fn main() {
 
         next_frame().await
     }
-    println!("Organism Population: {:?}", organism_population);
-    println!("Food: {:?}", food);
-    println!("Predator Population: {:?}", predator_population);
+    plot(organism_population, predator_population, food);
 }
