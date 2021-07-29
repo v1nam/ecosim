@@ -297,6 +297,13 @@ async fn main() {
             20.,
             RED,
         );
+        draw_text(
+            &format!("Time Elapsed: {}", get_time().round()),
+            screen_width() - 150.,
+            20.,
+            20.,
+            WHITE,
+        );
 
         next_frame().await
     }
