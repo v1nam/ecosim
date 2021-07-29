@@ -71,6 +71,9 @@ async fn main() {
         if is_key_pressed(KeyCode::Escape) {
             break;
         }
+        if is_key_pressed(KeyCode::S) {
+            plot(&organism_population, &predator_population, &food);          
+        }
         clear_background(BLACK);
         org_tree.clear();
         pred_tree.clear();
@@ -204,19 +207,17 @@ async fn main() {
                 } = obj
                 {
                     for other_obj in return_objects {
-                        match other_obj {
-                            Organism {
+                        if let Organism {
                                 pos, rad, energy, ..
-                            } => {
-                                if pos.distance(*position) <= *psize + rad {
-                                    *pen += energy;
-                                    *repurge += gen_range(0.0, energy);
-                                    organisms_to_remove.push(pos);
-                                } else if pos.distance(*position) <= *psize + rad + 20. {
-                                    *ptar = pos;
-                                }
+                            } = 
+                        other_obj {
+                            if pos.distance(*position) <= *psize + rad {
+                                *pen += energy;
+                                *repurge += gen_range(0.0, energy);
+                                organisms_to_remove.push(pos);
+                            } else if pos.distance(*position) <= *psize + rad + 20. {
+                                *ptar = pos;
                             }
-                            _ => {}
                         }
                     }
                     if *pen <= 0.0 {
@@ -307,5 +308,5 @@ async fn main() {
 
         next_frame().await
     }
-    plot(organism_population, predator_population, food);
+    plot(&organism_population, &predator_population, &food);
 }
