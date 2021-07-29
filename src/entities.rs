@@ -45,11 +45,17 @@ impl Entity {
             } => {
                 let w = screen_width() - *rad;
                 let h = screen_height() - *rad;
-                if pos.x >= w || pos.x <= *rad {
-                    velocity.x *= -1.;
+                if pos.x >= w {
+                    velocity.x = -(velocity.x.abs());
                 }
-                if pos.y >= h || pos.y <= *rad {
-                    velocity.y *= -1.;
+                if pos.x <= *rad {
+                    velocity.x = velocity.x.abs();
+                }
+                if pos.y >= h {
+                    velocity.y = -(velocity.y.abs());
+                }
+                if pos.y <= *rad {
+                    velocity.y = velocity.y.abs();
                 }
                 if target.x <= *rad {
                     target.x += *rad;
@@ -91,11 +97,17 @@ impl Entity {
             } => {
                 let w = screen_width() - *size;
                 let h = screen_height() - *size;
-                if pos.x >= w || pos.x <= *size {
-                    velocity.x *= -1.;
+                if pos.x >= w {
+                    velocity.x = -(velocity.x.abs());
                 }
-                if pos.y >= h || pos.y <= *size {
-                    velocity.y *= -1.;
+                if pos.x <= *size {
+                    velocity.x = velocity.x.abs();
+                }
+                if pos.y >= h {
+                    velocity.y = -(velocity.y.abs());
+                }
+                if pos.y <= *size {
+                    velocity.y = velocity.x.abs();
                 }
                 if target.x <= *size {
                     target.x += *size;
