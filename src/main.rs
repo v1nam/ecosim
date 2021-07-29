@@ -72,9 +72,14 @@ async fn main() {
             break;
         }
         if is_key_pressed(KeyCode::S) {
-            plot(&organism_population, &predator_population, &food);          
+            plot(&organism_population, &predator_population, &food);
+            /*
+            println!("Organism Populaion: {:?}", organism_population);
+            println!("Predator Population: {:?}", predator_population);
+            println!("Food Count: {:?}", food);
+            */
         }
-        clear_background(BLACK);
+        clear_background(Color::from_rgba(15, 20, 25, 255));
         org_tree.clear();
         pred_tree.clear();
         spawn_food += get_frame_time();
@@ -102,7 +107,7 @@ async fn main() {
                     org_tree.insert(org);
                 }
                 Food { pos, rad, energy } => {
-                    draw_circle(pos.x, pos.y, *rad, Color::new(0.0, 1.0, 0.0, *energy));
+                    draw_circle(pos.x, pos.y, *rad, Color::new(186. / 255., 230. / 255., 126. / 255., *energy));
                     org_tree.insert(org);
                 }
             }
@@ -132,7 +137,7 @@ async fn main() {
                     objpos.y,
                     *objrad,
                     2.0,
-                    Color::new(0.0, 0.0, 1.0, *objen),
+                    Color::new(115. / 255., 208. / 255., 1.0, *objen),
                 );
                 return_objects = Vec::new();
                 org_tree.retrieve(&mut return_objects, obj);
@@ -190,7 +195,7 @@ async fn main() {
                     *size,
                     *rot,
                     2.,
-                    Color::new(1.0, 0.0, 0.0, *energy),
+                    Color::new(243. / 255., 74. / 255., 74. / 255., *energy),
                 );
                 return_objects = Vec::new();
                 if *energy < 0.6 {
@@ -289,18 +294,19 @@ async fn main() {
             10.,
             20.,
             20.,
-            BLUE,
+            Color::from_rgba(115, 208, 255, 255),
         );
         draw_text(
             &format!("Population: {}", predator_count),
             10.,
             50.,
             20.,
-            RED,
+            Color::from_rgba(243, 74, 74, 255),
         );
+        let time_text = format!("Time Elapsed: {}", get_time().round());
         draw_text(
-            &format!("Time Elapsed: {}", get_time().round()),
-            screen_width() - 150.,
+            &time_text,
+            screen_width() - measure_text(&time_text, None, 20, 1.0).width,
             20.,
             20.,
             WHITE,
